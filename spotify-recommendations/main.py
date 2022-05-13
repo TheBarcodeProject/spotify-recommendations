@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import credentials
 import pandas as pd
+import re
 
 def get_all_saved_tracks(user, limit_step=1):
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
