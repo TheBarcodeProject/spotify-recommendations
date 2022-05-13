@@ -25,12 +25,19 @@ def get_all_saved_tracks(user, limit_step=1):
 
     return df
 
+def get_genres(artist_uri, sp):
+    artist_uri = re.search(r'(?<=spotify:artist:)[^.\s]*',artist_uri).group()
+    artist = sp.artist(artist_uri)
+
+    return artist['genres']
+
 def main():
 
     scope = "user-library-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=credentials.client_ID, client_secret= credentials.client_SECRET, redirect_uri=credentials.redirect_url, scope=scope))
 
     liked_tracks_df = get_all_saved_tracks(sp)
+    liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
 
 
 if __name__=="__main__":
