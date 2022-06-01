@@ -43,6 +43,12 @@ def get_genre_counts(df):
     liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
     return liked_genres_df
 
+def get_features(df, genre_list):
+    for genre in genre_list:
+        df[genre] = 1 if genre in df['genres'] else 0
+
+    return df
+
 
 def main():
 
@@ -56,7 +62,9 @@ def main():
 
     liked_genres_df = get_genre_counts(liked_tracks_df)
 
-    print(liked_genres_df)
+    features = get_features(liked_tracks_df, liked_genres_df)
+
+    print(features)
 
 
 if __name__=="__main__":
