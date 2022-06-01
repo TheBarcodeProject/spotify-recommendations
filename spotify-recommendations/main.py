@@ -32,6 +32,18 @@ def get_genres(artist_uri, sp):
 
     return artist['genres']
 
+def get_genre_counts(df):
+    liked_genres_df = pd.melt(df.genres.apply(pd.Series).reset_index(), 
+        id_vars=['index'],
+        value_name='genres') \
+        .drop('variable', axis=1) \
+        .sort_values('index') \
+        .dropna()
+
+    liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
+    return liked_genres_df
+
+
 def main():
 
     scope = "user-library-read"
@@ -42,7 +54,9 @@ def main():
 
     liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
 
-    print(liked_artists_df)
+    liked_genres_df = get_genre_counts(liked_tracks_df)
+
+    print(liked_genres_df)
 
 
 if __name__=="__main__":
