@@ -40,6 +40,10 @@ def main():
     liked_tracks_df = get_all_saved_tracks(sp)
     liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
 
+    liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
+
+    print(liked_artists_df)
+
 
 if __name__=="__main__":
     main()
