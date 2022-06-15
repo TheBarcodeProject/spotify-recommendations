@@ -51,6 +51,15 @@ def main():
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
     print("success!")
     liked_tracks_df = get_all_saved_tracks(sp)
+
+    urban = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
+    art_pop = ['art pop', 'chamber pop']
+    electropop = ['escape room', 'pop', 'dance pop', 'electropop', 'uk pop', 'metropopolis', 'dream pop', 'hyperpop', 'experimental pop', 'proto-hyperpop', 'indietronica']
+    electronic = ['electronica', 'uk bass', 'deconstructed club', 'wonky', 'witch house', 'microhouse', 'intelligent dance music', 'fluxwork', 'grave wave', 'hauntology', 'classic dubstep', 'jungle', 'glitchbreak', 'atmospheric dnb', 'wave', 'future garage', 'new rave', 'ambient', 'alternative dance', 'uk experimental electronic', 'big beat']
+    alt_rock = ['indie rock', 'alternative rock', 'rock', 'post-rock', 'experimental rock']
+    caribbean = ['dancehall', 'reggae fusion', 'traphall', 'jamaican hip hop']
+    emo = ['emo', 'dreamo', 'alternative emo', 'midwest emo']
+
     #liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
 
     #liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
