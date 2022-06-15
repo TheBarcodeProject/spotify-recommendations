@@ -45,6 +45,15 @@ def get_genre_counts(df):
     liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
     return liked_genres_df
 
+def get_discover_weeklies(user, limit_step=1):    
+    for offset in range(0, 30, limit_step):
+        response = user.current_user_playlists(
+            limit=limit_step,
+            offset=offset,
+        )
+    print(response)
+
+
 def main():
 
     scope = "user-library-read"
@@ -52,13 +61,13 @@ def main():
     print("success!")
     liked_tracks_df = get_all_saved_tracks(sp)
 
-    urban = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
-    art_pop = ['art pop', 'chamber pop']
-    electropop = ['escape room', 'pop', 'dance pop', 'electropop', 'uk pop', 'metropopolis', 'dream pop', 'hyperpop', 'experimental pop', 'proto-hyperpop', 'indietronica']
-    electronic = ['electronica', 'uk bass', 'deconstructed club', 'wonky', 'witch house', 'microhouse', 'intelligent dance music', 'fluxwork', 'grave wave', 'hauntology', 'classic dubstep', 'jungle', 'glitchbreak', 'atmospheric dnb', 'wave', 'future garage', 'new rave', 'ambient', 'alternative dance', 'uk experimental electronic', 'big beat']
-    alt_rock = ['indie rock', 'alternative rock', 'rock', 'post-rock', 'experimental rock']
-    caribbean = ['dancehall', 'reggae fusion', 'traphall', 'jamaican hip hop']
-    emo = ['emo', 'dreamo', 'alternative emo', 'midwest emo']
+    urban       = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
+    art_chamber = ['art pop', 'chamber pop']
+    metropolis  = ['escape room', 'pop', 'dance pop', 'electropop', 'uk pop', 'metropopolis', 'dream pop', 'hyperpop', 'experimental pop', 'proto-hyperpop', 'indietronica']
+    electronic  = ['electronica', 'uk bass', 'deconstructed club', 'wonky', 'witch house', 'microhouse', 'intelligent dance music', 'fluxwork', 'grave wave', 'hauntology', 'classic dubstep', 'jungle', 'glitchbreak', 'atmospheric dnb', 'wave', 'future garage', 'new rave', 'ambient', 'alternative dance', 'uk experimental electronic', 'big beat']
+    alt_rock    = ['indie rock', 'alternative rock', 'rock', 'post-rock', 'experimental rock']
+    caribbean   = ['dancehall', 'reggae fusion', 'traphall', 'jamaican hip hop']
+    emo         = ['emo', 'dreamo', 'alternative emo', 'midwest emo']
 
     #liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
 
