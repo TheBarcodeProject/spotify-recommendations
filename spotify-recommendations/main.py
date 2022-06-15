@@ -45,32 +45,6 @@ def get_genre_counts(df):
     liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
     return liked_genres_df
 
-def get_features(df, genre_list):
-    for genre in genre_list.index:
-        df[genre] = df.apply(lambda x: 1 if genre in x['genres'] else 0, axis = 1)
-
-    return df
-
-def calculate_clusters(df):
-    """
-    Implements K means on frequencies dataframe
-    """      
-    features = df.iloc[:,7:] 
-    kmeans = KMeans(6) 
-
-    #print(features)
-
-    identified_clusters = kmeans.fit_predict(features)
-
-    df_clusters = df.copy()
-    df_clusters['Cluster'] = identified_clusters 
-    df_clusters = df_clusters[['name', 'Cluster']]
-
-    #df.set_index('index', inplace=True) # Set index
-
-    return (df, df_clusters, features)
-
-
 def main():
 
     scope = "user-library-read"
@@ -81,15 +55,9 @@ def main():
 
     #liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
 
-    #liked_genres_df = get_genre_counts(liked_tracks_df)
+    #liked_genres_df = get_genre_counts(liked_tracks_df).sort_values(ascending = False)
 
-    #features = get_features(liked_tracks_df, liked_genres_df)
-
-    #features.to_csv("test.csv", mode='w+')
-
-    #df_clusters = calculate_clusters(features)[1]
-
-    print(liked_tracks_df)
+    #print(liked_tracks_df)
 
 
 if __name__=="__main__":
