@@ -54,6 +54,11 @@ def get_playlist_tracks(user, playlist_id):
     
     return tracks
 
+def get_artist_genres(user, id):
+    artist = user.artist(id)
+    
+    return artist['genres']
+
 def get_discover_weeklies(user, limit_step=1):    
     print("start!")
     for offset in range(0, 30, limit_step):
