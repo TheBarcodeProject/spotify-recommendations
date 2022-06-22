@@ -45,8 +45,19 @@ def get_genre_counts(df):
     liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
     return liked_genres_df
 
+def get_playlist_tracks(user, playlist_id):
+    tracks = []
+    playlist = user.playlist(playlist_id, fields=None, market=None, additional_types=('track', ))
+    
+    for track in playlist['tracks']['items']:
+        tracks.append(track['track'])
+    
+    return tracks
+
 def get_discover_weeklies(user, limit_step=1):    
+    print("start!")
     for offset in range(0, 30, limit_step):
+        print("enter!")
         response = user.current_user_playlists(
             limit=limit_step,
             offset=offset,
@@ -57,9 +68,9 @@ def get_discover_weeklies(user, limit_step=1):
 def main():
 
     scope = "user-library-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     print("success!")
-    liked_tracks_df = get_all_saved_tracks(sp)
+    #liked_tracks_df = get_all_saved_tracks(sp)
 
     urban       = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
     art_chamber = ['art pop', 'chamber pop']
@@ -75,7 +86,7 @@ def main():
 
     #liked_genres_df = get_genre_counts(liked_tracks_df).sort_values(ascending = False)
 
-    #print(liked_tracks_df)
+    get_discover_weeklies(sp)
 
 
 if __name__=="__main__":
