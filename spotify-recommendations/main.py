@@ -54,11 +54,6 @@ def get_playlist_tracks(user, playlist_id):
     
     return tracks
 
-def get_artist_genres(user, id):
-    artist = user.artist(id)
-    
-    return artist['genres']
-
 def get_discover_weeklies(user, limit_step=1):   
     name, track, genres = [], [], []
     for offset in range(0, 10000000, limit_step):
@@ -74,7 +69,7 @@ def get_discover_weeklies(user, limit_step=1):
             for song in tracks:
                 name.append(response['items'][0]['name'])
                 track.append(song['name'])
-                genres.append(get_genres(sp, song['artists'][0]['uri']))
+                genres.append(get_genres(song['artists'][0]['uri'], user))
         
     d = {"name": name, "track": track, "genres": genres}
     df = pd.DataFrame(d)
