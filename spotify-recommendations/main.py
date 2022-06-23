@@ -92,6 +92,16 @@ def main():
     caribbean   = ['dancehall', 'reggae fusion', 'traphall', 'jamaican hip hop']
     emo         = ['emo', 'dreamo', 'alternative emo', 'midwest emo']
 
+    supergenres = {
+        'urban' : urban,
+        'art_chamber' : art_chamber,
+        'metropolis' : metropolis,
+        'electronic' : electronic,
+        'alt_rock' : alt_rock,
+        'caribbean' : caribbean,
+        'emo' : emo
+    }   
+
     #liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
 
     #liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
