@@ -64,7 +64,7 @@ def get_discover_weeklies(user, limit_step=1):
         if response['items'] == []:
             break  
         if response['items'][0]['name'].startswith('DW'):
-            tracks = get_playlist_tracks(sp, response['items'][0]['id'])
+            tracks = get_playlist_tracks(user, response['items'][0]['id'])
 
             for song in tracks:
                 name.append(response['items'][0]['name'])
