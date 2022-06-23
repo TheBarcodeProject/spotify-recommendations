@@ -76,6 +76,18 @@ def get_discover_weeklies(user, limit_step=1):
 
     return df
 
+def get_match(genres, supergenres, which):
+    is_match = False
+    supergenre = None
+    
+    for genre in genres:
+        for key,value in supergenres.items():
+            if genre in value:
+                is_match = True
+                supergenre = key
+    
+    return supergenre if which == 'supergenre' else is_match
+
 
 def main():
 
