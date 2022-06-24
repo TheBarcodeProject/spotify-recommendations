@@ -88,6 +88,20 @@ def get_match(genres, supergenres, which):
     
     return supergenre if which == 'supergenre' else is_match
 
+def get_match_percentage(df):
+    df['is_match'] = df['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'is_match')
+    df['supergenre'] = df['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'supergenre')
+    
+    df = df[df['genres'].str.len() != 0] 
+    
+    true_vals = df[df['is_match']].groupby(['name']).size().reset_index(name='true') 
+    false_vals = df[df['is_match'] == False].groupby(['name']).size().reset_index(name='false') 
+    
+    df = pd.merge(true_vals, false_vals)
+    df['% match'] = df['true'] / (df['true'] + df['false'])
+    
+    return df
+
 
 def main():
 
@@ -121,6 +135,9 @@ def main():
     #liked_genres_df = get_genre_counts(liked_tracks_df).sort_values(ascending = False)
 
     get_discover_weeklies(sp)
+
+    #dws['is_match'] = dws['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'is_match')
+    #dws['supergenre'] = dws['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'supergenre')
 
 
 if __name__=="__main__":
