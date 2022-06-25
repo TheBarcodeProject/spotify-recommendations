@@ -54,7 +54,7 @@ def get_playlist_tracks(user, playlist_id):
     
     return tracks
 
-def get_discover_weeklies(user, limit_step=1):   
+def get_playlists(user, limit_step=1, regex="^.*$"):   
     name, track, genres = [], [], []
     for offset in range(0, 10000000, limit_step):
         response = user.current_user_playlists(
@@ -63,8 +63,9 @@ def get_discover_weeklies(user, limit_step=1):
         )
         if response['items'] == []:
             break  
-        if response['items'][0]['name'].startswith('DW'):
-            tracks = get_playlist_tracks(user, response['items'][0]['id'])
+        if re.search(regex, response['items'][0]['name']):
+        #if response['items'][0]['name'].startswith('DW'):
+            tracks = get_playlist_tracks(sp, response['items'][0]['id'])
 
             for song in tracks:
                 name.append(response['items'][0]['name'])
@@ -88,9 +89,9 @@ def get_match(genres, supergenres, which):
     
     return supergenre if which == 'supergenre' else is_match
 
-def get_match_percentage(df):
-    df['is_match'] = df['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'is_match')
-    df['supergenre'] = df['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'supergenre')
+def get_match_percentage(df, supergenres):
+    df['is_match'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'is_match')
+    df['supergenre'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'supergenre')
     
     df = df[df['genres'].str.len() != 0] 
     
@@ -136,8 +137,6 @@ def main():
 
     get_discover_weeklies(sp)
 
-    #dws['is_match'] = dws['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'is_match')
-    #dws['supergenre'] = dws['genres'].apply(get_match_and_supergenre, supergenres = supergenres, which = 'supergenre')
 
 
 if __name__=="__main__":
