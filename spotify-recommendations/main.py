@@ -95,10 +95,7 @@ def add_match_and_supergenre(df, supergenres):
     
     return df
 
-def get_match_percentage(df, supergenres):
-    df['is_match'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'is_match')
-    df['supergenre'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'supergenre')
-    
+def get_match_percentage(df):
     df = df[df['genres'].str.len() != 0] 
     
     true_vals = df[df['is_match']].groupby(['name']).size().reset_index(name='true') 
