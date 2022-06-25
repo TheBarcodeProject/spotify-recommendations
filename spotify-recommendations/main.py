@@ -103,6 +103,21 @@ def get_match_percentage(df, supergenres):
     
     return df
 
+def get_followed_artists(user):   
+    name, genres = [], []
+    response = user.current_user_followed_artists(limit=50)
+    
+    if response['artists']['items'] != []:
+        
+        for artist in response['artists']['items']:
+            name.append(artist['name'])
+            genres.append(artist['genres'])
+        
+    d = {"name": name, "genres": genres}
+    df = pd.DataFrame(d)
+
+    return df
+
 
 def main():
 
@@ -134,8 +149,6 @@ def main():
     #liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
 
     #liked_genres_df = get_genre_counts(liked_tracks_df).sort_values(ascending = False)
-
-    get_discover_weeklies(sp)
 
 
 
