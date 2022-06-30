@@ -121,23 +121,24 @@ def get_followed_artists(user):
 
     return df
 
-def get_saved_albums(user, limit_step=1):   
-    name, genres = [], []
-    for offset in range(0, 10000000, limit_step):
-        response = user.current_user_playlists(
-            limit=limit_step,
-            offset=offset,
-        )
+def get_saved_albums(user):   
+    dfs = []
+    offset = 0
     
-    if response['items'] != []:
-        
-        for album in response['items']:
-            name.append(album['album']['name'])
-            genres.append(get_genres(album['album']['tracks']['items'][0]['artists'][0]['uri'], user))
-                
-    d = {"name": name, "genres": genres}
-    df = pd.DataFrame(d)
+    for i in range(3):
+        name, genres = [], []
+        response = user.current_user_saved_albums(limit=50, offset=offset)
+        print("iteration " + str(i) + "; size of response is " + str(len(response)))
+        if response['items'] != []:
+            for album in response['items']:
+                name.append(album['album']['name'])
+                genres.append(get_genres(album['album']['tracks']['items'][0]['artists'][0]['uri'], user))
 
+        d = {"name": name, "genres": genres}
+        dfs.append(pd.DataFrame(d))
+        offset += 50
+
+    df = pd.concat(dfs)
     return df
 
 
