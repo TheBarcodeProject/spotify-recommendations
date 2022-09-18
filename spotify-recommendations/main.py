@@ -188,12 +188,18 @@ def main():
         'emo' : emo
     }
 
+    # tracks
+    saved_tracks = get_all_saved_tracks(sp)
+    saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
+    saved_tracks = add_match_and_supergenre(saved_tracks)
+    print(get_percentage(saved_tracks))
+
     # albums
     saved_albums = get_saved_albums(sp)
     saved_albums = add_match_and_supergenre(saved_albums)
     print(get_percentage(saved_albums))
 
-    # artists
+    # artists (use scope user-follow-read)
     followed_artists = get_followed_artists(sp)
     followed_artists = add_match_and_supergenre(followed_artists)
     print(get_percentage(followed_artists))
