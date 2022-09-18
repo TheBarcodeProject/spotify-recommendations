@@ -5,6 +5,7 @@ import acct1_credentials
 import acct2_credentials
 import pandas as pd
 import re
+from collections import Counter
 
 def get_all_saved_tracks(user, limit_step=1):
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
@@ -140,6 +141,20 @@ def get_saved_albums(user):
 
     df = pd.concat(dfs)
     return df
+
+def get_most_common_genre(df_genres):
+    genres = df_genres.explode()
+    
+    mcs = Counter(genres).most_common(5)
+    
+    for mc in mcs:
+        if pd.isnull(mc[0]):
+            pass
+        else:
+            most_common = mc
+            break
+    
+    return most_common
 
 
 def main():
