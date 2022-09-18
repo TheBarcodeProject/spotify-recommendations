@@ -156,6 +156,12 @@ def get_most_common_genre(df_genres):
     
     return most_common
 
+def get_percentage(df):
+    false_count = (~df.is_match).sum()
+    true_count = (df.is_match).sum()
+    
+    return (true_count / (true_count + false_count))
+
 
 def main():
 
