@@ -186,14 +186,30 @@ def main():
         'alt_rock' : alt_rock,
         'caribbean' : caribbean,
         'emo' : emo
-    }   
+    }
 
-    #liked_tracks_df['genres'] = liked_tracks_df['artist_uri'].apply(get_genres, sp = sp)
+    # albums
+    saved_albums = get_saved_albums(sp)
+    saved_albums = add_match_and_supergenre(saved_albums)
+    print(get_percentage(saved_albums))
 
-    #liked_artists_df = liked_tracks_df.groupby(['artist_name'])['artist_name'].count()
+    # artists
+    followed_artists = get_followed_artists(sp)
+    followed_artists = add_match_and_supergenre(followed_artists)
+    print(get_percentage(followed_artists))
 
-    #liked_genres_df = get_genre_counts(liked_tracks_df).sort_values(ascending = False)
+    # playlists
+    discover_weeklies = get_playlists(sp, regex="^DW.*$")
+    discover_weeklies = add_match_and_supergenre(discover_weeklies)
+    dw_most_common_genres = get_most_common_genre(discover_weeklies.genres) # ToDo: get by playlist
+    print(get_match_percentage(discover_weeklies))
 
+    daily_mixes = get_playlists(sp, regex="^Daily.*$")
+    daily_mixes = add_match_and_supergenre(daily_mixes)
+    dm_most_common_genres = get_most_common_genre(daily_mixes.genres) #ToDo: get by playlist
+    print(get_match_percentage(daily_mixes))
+
+    # ToDo: get most_listened songs
 
 
 if __name__=="__main__":
