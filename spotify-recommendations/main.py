@@ -184,6 +184,21 @@ def get_top_tracks(user, limit_step=1):
 
     return df
 
+def get_top_artists(user, limit_step=1):
+    name, genres = [], []
+    response = user.current_user_top_artists(limit=50)
+    
+    if response['items'] != []:
+        
+        for artist in response['items']:
+            name.append(artist['name'])
+            genres.append(artist['genres'])
+        
+    d = {"name": name, "genres": genres}
+    df = pd.DataFrame(d)
+
+    return df 
+
 
 def main():
 
