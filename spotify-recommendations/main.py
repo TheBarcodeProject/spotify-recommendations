@@ -162,13 +162,35 @@ def get_percentage(df):
     
     return (true_count / (true_count + false_count))
 
+def get_top_tracks(user, limit_step=1):   
+    name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
+    for offset in range(0, 10000000, limit_step):
+        response = user.current_user_top_tracks(
+            limit=limit_step,
+            offset=offset,
+        )
+        if response['items'] == []:
+            break
+        name.append(response['items'][0]['name'])
+        popularity.append(response['items'][0]['popularity'])
+        release_date.append(response['items'][0]['album']['release_date'])
+        track_uri.append(response['items'][0]['uri'])
+        artist_name.append(response['items'][0]['artists'][0]['name']) 
+        artist_uri.append(response['items'][0]['artists'][0]['uri']) 
+
+    
+    d = {"name": name, "popularity": popularity, "release_date": release_date, "track_uri": track_uri, "artist_name": artist_name, "artist_uri": artist_uri}
+    df = pd.DataFrame(d)
+
+    return df
+
 
 def main():
 
     scope = "user-library-read"
+    #scope = "user-follow-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     print("success!")
-    #liked_tracks_df = get_all_saved_tracks(sp)
 
     urban       = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
     art_chamber = ['art pop', 'chamber pop']
@@ -204,7 +226,11 @@ def main():
     followed_artists = add_match_and_supergenre(followed_artists)
     print(get_percentage(followed_artists))
 
-    # playlists
+    # ToDo: get most_listened songs
+
+    # ------------ analysis of recommendations starts here ------------------- #
+
+    # playlists (try to optimize by pulling all playlists and then filtering)
     discover_weeklies = get_playlists(sp, regex="^DW.*$")
     discover_weeklies = add_match_and_supergenre(discover_weeklies)
     dw_most_common_genres = get_most_common_genre(discover_weeklies.genres) # ToDo: get by playlist
@@ -215,8 +241,10 @@ def main():
     dm_most_common_genres = get_most_common_genre(daily_mixes.genres) #ToDo: get by playlist
     print(get_match_percentage(daily_mixes))
 
-    # ToDo: get most_listened songs
-
+    release_radar = get_playlists(sp, regex="^Release.*$")
+    release_radar = add_match_and_supergenre(release_radar)
+    rr_most_common_genres = get_most_common_genre(release_radar.genres) 
+    print(get_match_percentage(release_radar))
 
 if __name__=="__main__":
     main()
