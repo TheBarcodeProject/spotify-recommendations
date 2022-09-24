@@ -202,7 +202,7 @@ def get_top_artists(user, limit_step=1):
 
 def main():
 
-    scope = "user-library-read"
+    
     #scope = "user-follow-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     print("success!")
@@ -226,22 +226,33 @@ def main():
     }
 
     # tracks
+    scope = "user-library-read"
     saved_tracks = get_all_saved_tracks(sp)
     saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
     saved_tracks = add_match_and_supergenre(saved_tracks)
     print(get_percentage(saved_tracks))
 
     # albums
+    scope = "user-library-read"
     saved_albums = get_saved_albums(sp)
     saved_albums = add_match_and_supergenre(saved_albums)
     print(get_percentage(saved_albums))
 
-    # artists (use scope user-follow-read)
+    # artists 
+    scope = "user-follow-read"
     followed_artists = get_followed_artists(sp)
     followed_artists = add_match_and_supergenre(followed_artists)
     print(get_percentage(followed_artists))
 
-    # ToDo: get most_listened songs
+    scope = "user-top-read"
+    top_tracks = get_top_tracks(sp)
+    top_tracks = add_match_and_supergenre(top_tracks)
+    print(get_percentage(top_tracks))
+
+    scope = "user-top-read"
+    top_artists = get_top_tracks(sp)
+    top_artists = add_match_and_supergenre(top_artists)
+    print(get_percentage(top_artists))
 
     # ------------ analysis of recommendations starts here ------------------- #
 
