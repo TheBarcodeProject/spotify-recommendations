@@ -70,7 +70,7 @@ def get_playlists(user, limit_step=1, regex="^.*$"):
             break  
         if re.search(regex, response['items'][0]['name']):
         #if response['items'][0]['name'].startswith('DW'):
-            tracks = get_playlist_tracks(sp, response['items'][0]['id'])
+            tracks = get_playlist_tracks(user, response['items'][0]['id'])
 
             for song in tracks:
                 name.append(response['items'][0]['name'])
@@ -238,19 +238,19 @@ def main():
     }
 
     # tracks
-    scope = "user-library-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    saved_tracks = get_all_saved_tracks(sp)
-    saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
-    saved_tracks = add_match_and_supergenre(saved_tracks, supergenres)
-    saved_tracks.to_csv(acct2_credentials.target_dir + 'saved_tracks.csv')
+    #scope = "user-library-read"
+    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    #saved_tracks = get_all_saved_tracks(sp)
+    #saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
+    #saved_tracks = add_match_and_supergenre(saved_tracks, supergenres)
+    #saved_tracks.to_csv(acct2_credentials.target_dir + 'saved_tracks.csv')
 
     # albums
-    scope = "user-library-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    saved_albums = get_saved_albums(sp)
-    saved_albums = add_match_and_supergenre(saved_albums, supergenres)
-    saved_albums.to_csv(acct2_credentials.target_dir + 'saved_albums.csv')
+    #scope = "user-library-read"
+    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    #saved_albums = get_saved_albums(sp)
+    #saved_albums = add_match_and_supergenre(saved_albums, supergenres)
+    #saved_albums.to_csv(acct2_credentials.target_dir + 'saved_albums.csv')
 
     # artists 
     scope = "user-follow-read"
