@@ -192,6 +192,8 @@ def get_top_tracks(user, limit_step=1):
     d = {"name": name, "popularity": popularity, "release_date": release_date, "track_uri": track_uri, "artist_name": artist_name, "artist_uri": artist_uri}
     df = pd.DataFrame(d)
 
+    df['genres'] = df.artist_uri.apply(get_genres, sp=user)
+
     return df
 
 def get_top_artists(user, limit_step=1):
