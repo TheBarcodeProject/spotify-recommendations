@@ -8,6 +8,7 @@ import re
 from collections import Counter
 
 def get_all_saved_tracks(user, limit_step=1):
+    """ Returns dataframe with all the user's saved tracks """
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
     for offset in range(0, 10000000, limit_step):
         response = user.current_user_saved_tracks(
@@ -30,23 +31,25 @@ def get_all_saved_tracks(user, limit_step=1):
     return df
 
 def get_genres(artist_uri, sp):
+    """ Recieves an artist_uri and returns the genres associated to the artist """
     artist_uri = re.search(r'(?<=spotify:artist:)[^.\s]*',artist_uri).group()
     artist = sp.artist(artist_uri)
 
     return artist['genres']
+#
+#def get_genre_counts(df)
+#    liked_genres_df = pd.melt(df.genres.apply(pd.Series).reset_index(), 
+#        id_vars=['index'],
+#        value_name='genres') \
+#        .drop('variable', axis=1) \
+#        .sort_values('index') \
+#        .dropna()
 
-def get_genre_counts(df):
-    liked_genres_df = pd.melt(df.genres.apply(pd.Series).reset_index(), 
-        id_vars=['index'],
-        value_name='genres') \
-        .drop('variable', axis=1) \
-        .sort_values('index') \
-        .dropna()
-
-    liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
-    return liked_genres_df
+#    liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
+#    return liked_genres_df
 
 def get_playlist_tracks(user, playlist_id):
+    """ Get tracks from a playlist """
     tracks = []
     playlist = user.playlist(playlist_id, fields=None, market=None, additional_types=('track', ))
     
@@ -55,7 +58,8 @@ def get_playlist_tracks(user, playlist_id):
     
     return tracks
 
-def get_playlists(user, limit_step=1, regex="^.*$"):   
+def get_playlists(user, limit_step=1, regex="^.*$"): 
+    """ Get user's saved playlists """  
     name, track, genres = [], [], []
     for offset in range(0, 10000000, limit_step):
         response = user.current_user_playlists(
@@ -79,6 +83,7 @@ def get_playlists(user, limit_step=1, regex="^.*$"):
     return df
 
 def get_match(genres, supergenres, which):
+    """ Returns true if the genre falls within a supergenre, false otherwise """
     is_match = False
     supergenre = None
     
@@ -91,12 +96,14 @@ def get_match(genres, supergenres, which):
     return supergenre if which == 'supergenre' else is_match
 
 def add_match_and_supergenre(df, supergenres):
+    """ Adds match value and supergenre to dataframe """
     df['is_match'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'is_match')
     df['supergenre'] = df['genres'].apply(get_match, supergenres = supergenres, which = 'supergenre')
     
     return df
 
 def get_match_percentage(df):
+    """ Calculates the percentage of tracks in dataframe which match a supergenre """
     df = df[df['genres'].str.len() != 0] 
     
     true_vals = df[df['is_match']].groupby(['name']).size().reset_index(name='true') 
@@ -108,6 +115,7 @@ def get_match_percentage(df):
     return df
 
 def get_followed_artists(user):   
+    """ Returns user's followed artists """
     name, genres = [], []
     response = user.current_user_followed_artists(limit=50)
     
@@ -123,6 +131,7 @@ def get_followed_artists(user):
     return df
 
 def get_saved_albums(user):   
+    """ Returns user's saved albums """
     dfs = []
     offset = 0
     
@@ -143,6 +152,7 @@ def get_saved_albums(user):
     return df
 
 def get_most_common_genre(df_genres):
+    """ Calculates most frequently ocurring genre from a genres column """
     genres = df_genres.explode()
     
     mcs = Counter(genres).most_common(5)
@@ -156,13 +166,14 @@ def get_most_common_genre(df_genres):
     
     return most_common
 
-def get_percentage(df):
-    false_count = (~df.is_match).sum()
-    true_count = (df.is_match).sum()
+#def get_percentage(df):
+#    false_count = (~df.is_match).sum()
+#    true_count = (df.is_match).sum()
     
-    return (true_count / (true_count + false_count))
+#    return (true_count / (true_count + false_count))
 
 def get_top_tracks(user, limit_step=1):   
+    """ Returns user's most played tracks """
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
     for offset in range(0, 10000000, limit_step):
         response = user.current_user_top_tracks(
@@ -185,6 +196,7 @@ def get_top_tracks(user, limit_step=1):
     return df
 
 def get_top_artists(user, limit_step=1):
+    """ Returns user's most played artists """
     name, genres = [], []
     response = user.current_user_top_artists(limit=50)
     
