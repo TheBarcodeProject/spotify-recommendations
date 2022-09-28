@@ -230,47 +230,53 @@ def main():
     saved_tracks = get_all_saved_tracks(sp)
     saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
     saved_tracks = add_match_and_supergenre(saved_tracks)
-    print(get_percentage(saved_tracks))
+    saved_tracks.to_csv('data/saved_tracks.csv')
 
     # albums
     scope = "user-library-read"
     saved_albums = get_saved_albums(sp)
     saved_albums = add_match_and_supergenre(saved_albums)
-    print(get_percentage(saved_albums))
+    saved_albums.to_csv('data/saved_albums.csv')
 
     # artists 
     scope = "user-follow-read"
     followed_artists = get_followed_artists(sp)
     followed_artists = add_match_and_supergenre(followed_artists)
-    print(get_percentage(followed_artists))
+    followed_artists.to_csv('data/followed_artists.csv')
 
     scope = "user-top-read"
     top_tracks = get_top_tracks(sp)
     top_tracks = add_match_and_supergenre(top_tracks)
-    print(get_percentage(top_tracks))
+    top_tracks.to_csv('data/top_tracks.csv')
 
     scope = "user-top-read"
     top_artists = get_top_tracks(sp)
     top_artists = add_match_and_supergenre(top_artists)
-    print(get_percentage(top_artists))
+    top_artists.to_csv('data/top_artists.csv')
 
     # ------------ analysis of recommendations starts here ------------------- #
 
     # playlists (try to optimize by pulling all playlists and then filtering)
     discover_weeklies = get_playlists(sp, regex="^DW.*$")
     discover_weeklies = add_match_and_supergenre(discover_weeklies)
-    dw_most_common_genres = get_most_common_genre(discover_weeklies.genres) # ToDo: get by playlist
-    print(get_match_percentage(discover_weeklies))
+    dw_most_common_genres = discover_weeklies.groupby('name').agg({'genres': get_most_common_genre})
+    dw_most_common_genres.to_csv('data/dw_most_common_genres.csv')
+    dw_match_percentages = get_match_percentage(discover_weeklies)
+    dw_match_percentages.to_csv('data/dw_match_percentages.csv')
 
     daily_mixes = get_playlists(sp, regex="^Daily.*$")
     daily_mixes = add_match_and_supergenre(daily_mixes)
-    dm_most_common_genres = get_most_common_genre(daily_mixes.genres) #ToDo: get by playlist
-    print(get_match_percentage(daily_mixes))
+    dm_most_common_genres = daily_mixes.groupby('name').agg({'genres': get_most_common_genre})
+    dm_most_common_genres.to_csv('data/dm_most_common_genres.csv')
+    dm_match_percentages = get_match_percentage(daily_mixes)
+    dm_match_percentages.to_csv('data/dm_match_percentages.csv')
 
     release_radar = get_playlists(sp, regex="^Release.*$")
     release_radar = add_match_and_supergenre(release_radar)
     rr_most_common_genres = get_most_common_genre(release_radar.genres) 
-    print(get_match_percentage(release_radar))
+    rr_most_common_genres.to_csv('data/rr_most_common_genres.csv')
+    rr_match_percentages = get_match_percentage(release_radar)
+    rr_match_percentages.to_csv('data/rr_match_percentages.csv')
 
 if __name__=="__main__":
     main()
