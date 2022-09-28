@@ -82,6 +82,30 @@ def get_playlists(user, limit_step=1, regex="^.*$"):
 
     return df
 
+def get_followed_playlists(user, limit_step=1, regex="^.*$"): 
+    """ Get user's saved playlists """  
+    name, track, genres = [], [], []
+    for offset in range(0, 10000000, limit_step):
+        response = user.current_user_follow_playlist(
+            limit=limit_step,
+            offset=offset,
+        )
+        if response['items'] == []:
+            break  
+        if re.search(regex, response['items'][0]['name']):
+        #if response['items'][0]['name'].startswith('DW'):
+            tracks = get_playlist_tracks(user, response['items'][0]['id'])
+
+            for song in tracks:
+                name.append(response['items'][0]['name'])
+                track.append(song['name'])
+                genres.append(get_genres(song['artists'][0]['uri'], user))
+        
+    d = {"name": name, "track": track, "genres": genres}
+    df = pd.DataFrame(d)
+
+    return df
+
 def get_match(genres, supergenres, which):
     """ Returns true if the genre falls within a supergenre, false otherwise """
     is_match = False
@@ -253,36 +277,36 @@ def main():
     #saved_albums.to_csv(acct2_credentials.target_dir + 'saved_albums.csv')
 
     # artists 
-    scope = "user-follow-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    followed_artists = get_followed_artists(sp)
-    followed_artists = add_match_and_supergenre(followed_artists, supergenres)
-    followed_artists.to_csv(acct2_credentials.target_dir + 'followed_artists.csv')
+    #scope = "user-follow-read"
+    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    #followed_artists = get_followed_artists(sp)
+    #followed_artists = add_match_and_supergenre(followed_artists, supergenres)
+    #followed_artists.to_csv(acct2_credentials.target_dir + 'followed_artists.csv')
 
-    scope = "user-top-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    top_tracks = get_top_tracks(sp)
-    top_tracks = add_match_and_supergenre(top_tracks, supergenres)
-    top_tracks.to_csv(acct2_credentials.target_dir + 'top_tracks.csv')
+    #scope = "user-top-read"
+    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    #top_tracks = get_top_tracks(sp)
+    #top_tracks = add_match_and_supergenre(top_tracks, supergenres)
+    #top_tracks.to_csv(acct2_credentials.target_dir + 'top_tracks.csv')
 
-    scope = "user-top-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    top_artists = get_top_artists(sp)
-    top_artists = add_match_and_supergenre(top_artists, supergenres)
-    top_artists.to_csv(acct2_credentials.target_dir + 'top_artists.csv')
+    #scope = "user-top-read"
+    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    #top_artists = get_top_artists(sp)
+    #top_artists = add_match_and_supergenre(top_artists, supergenres)
+    #top_artists.to_csv(acct2_credentials.target_dir + 'top_artists.csv')
 
     # ------------ analysis of recommendations starts here ------------------- #
 
     # playlists (try to optimize by pulling all playlists and then filtering)
-    discover_weeklies = get_playlists(sp, regex="^DW.*$")
-    discover_weeklies = add_match_and_supergenre(discover_weeklies, supergenres)
-    discover_weeklies.to_csv(acct2_credentials.target_dir + 'discover_weeklies.csv')
-    dw_most_common_genres = discover_weeklies.groupby('name').agg({'genres': get_most_common_genre})
-    dw_most_common_genres.to_csv(acct2_credentials.target_dir + 'dw_most_common_genres.csv')
-    dw_match_percentages = get_match_percentage(discover_weeklies)
-    dw_match_percentages.to_csv(acct2_credentials.target_dir + 'dw_match_percentages.csv')
+    #discover_weeklies = get_playlists(sp, regex="^DW.*$")
+    #discover_weeklies = add_match_and_supergenre(discover_weeklies, supergenres)
+    #discover_weeklies.to_csv(acct2_credentials.target_dir + 'discover_weeklies.csv')
+    #dw_most_common_genres = discover_weeklies.groupby('name').agg({'genres': get_most_common_genre})
+    #dw_most_common_genres.to_csv(acct2_credentials.target_dir + 'dw_most_common_genres.csv')
+    #dw_match_percentages = get_match_percentage(discover_weeklies)
+    #dw_match_percentages.to_csv(acct2_credentials.target_dir + 'dw_match_percentages.csv')
 
-    daily_mixes = get_playlists(sp, regex="^Daily.*$")
+    daily_mixes = get_followed_playlists(sp, regex="^Daily.*$")
     daily_mixes = add_match_and_supergenre(daily_mixes, supergenres)
     daily_mixes.to_csv(acct2_credentials.target_dir + 'daily_mixes.csv')
     dm_most_common_genres = daily_mixes.groupby('name').agg({'genres': get_most_common_genre})
@@ -290,7 +314,7 @@ def main():
     dm_match_percentages = get_match_percentage(daily_mixes)
     dm_match_percentages.to_csv(acct2_credentials.target_dir + 'dm_match_percentages.csv')
 
-    release_radar = get_playlists(sp, regex="^Release.*$")
+    release_radar = get_followed_playlists(sp, regex="^Release.*$")
     release_radar = add_match_and_supergenre(release_radar, supergenres)
     release_radar.to_csv(acct2_credentials.target_dir + 'release_radar.csv')
     rr_most_common_genres = release_radar.groupby('name').agg({'genres': get_most_common_genre})
