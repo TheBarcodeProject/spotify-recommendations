@@ -215,9 +215,8 @@ def get_top_artists(user, limit_step=1):
 def main():
 
     
-    #scope = "user-follow-read"
+    scope = "user-follow-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    print("success!")
 
     urban       = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
     art_chamber = ['art pop', 'chamber pop']
@@ -239,31 +238,36 @@ def main():
 
     # tracks
     scope = "user-library-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     saved_tracks = get_all_saved_tracks(sp)
     saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
-    saved_tracks = add_match_and_supergenre(saved_tracks)
+    saved_tracks = add_match_and_supergenre(saved_tracks, supergenres)
     saved_tracks.to_csv('data/saved_tracks.csv')
 
     # albums
     scope = "user-library-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     saved_albums = get_saved_albums(sp)
-    saved_albums = add_match_and_supergenre(saved_albums)
+    saved_albums = add_match_and_supergenre(saved_albums, supergenres)
     saved_albums.to_csv('data/saved_albums.csv')
 
     # artists 
     scope = "user-follow-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     followed_artists = get_followed_artists(sp)
-    followed_artists = add_match_and_supergenre(followed_artists)
+    followed_artists = add_match_and_supergenre(followed_artists, supergenres)
     followed_artists.to_csv('data/followed_artists.csv')
 
     scope = "user-top-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     top_tracks = get_top_tracks(sp)
-    top_tracks = add_match_and_supergenre(top_tracks)
+    top_tracks = add_match_and_supergenre(top_tracks, supergenres)
     top_tracks.to_csv('data/top_tracks.csv')
 
     scope = "user-top-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
     top_artists = get_top_tracks(sp)
-    top_artists = add_match_and_supergenre(top_artists)
+    top_artists = add_match_and_supergenre(top_artists, supergenres)
     top_artists.to_csv('data/top_artists.csv')
 
     # ------------ analysis of recommendations starts here ------------------- #
