@@ -267,7 +267,7 @@ def main():
 
     scope = "user-top-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    top_artists = get_top_tracks(sp)
+    top_artists = get_top_artists(sp)
     top_artists = add_match_and_supergenre(top_artists, supergenres)
     top_artists.to_csv('data/top_artists.csv')
 
