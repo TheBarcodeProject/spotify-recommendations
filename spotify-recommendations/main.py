@@ -138,7 +138,6 @@ def get_saved_albums(user):
     for i in range(3):
         name, genres = [], []
         response = user.current_user_saved_albums(limit=50, offset=offset)
-        print("iteration " + str(i) + "; size of response is " + str(len(response)))
         if response['items'] != []:
             for album in response['items']:
                 name.append(album['album']['name'])
