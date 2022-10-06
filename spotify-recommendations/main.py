@@ -203,6 +203,8 @@ def get_top_artists(user, limit_step=1):
     return df 
 
 def transform(what):
+    """ Transforms data for Flourish consumption """
+
     source_string = acct1_credentials.target_dir + what + '.csv'
     target_string_1 = acct1_credentials.target_dir + what + '_pctg.csv'
     target_string_2 = acct1_credentials.target_dir + what + '_mcg.csv'
