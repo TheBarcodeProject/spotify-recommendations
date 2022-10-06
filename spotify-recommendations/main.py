@@ -1,3 +1,4 @@
+from cmath import nan
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from sklearn.cluster import KMeans
@@ -8,6 +9,7 @@ import re
 from collections import Counter
 from ast import literal_eval
 import numpy as np
+import os
 
 def get_all_saved_tracks(user, limit_step=1):
     """ Returns dataframe with all the user's saved tracks """
@@ -210,22 +212,47 @@ def transform(what):
     target_string_2 = acct1_credentials.target_dir + '/flourish/' + what + '_mcg.csv'
 
     df = pd.read_csv(source_string, converters={'genres': literal_eval})
+    df.fillna('Otro', inplace=True)
+    df = df.replace({'supergenre': {  
+                                        'urban': 'Urban', 
+                                        'art_chamber': 'Art Chamber',
+                                        'metropolis': 'Metropolis',
+                                        'electronic': 'Electronic',
+                                        'alt_rock': 'Alt Rock',
+                                        'caribbean': 'Caribbean',
+                                        'emo': 'Emo'
+                                    }})
 
     total = len(df.index)
     df_counts = df.groupby(['supergenre'], dropna=False)['supergenre'].count()
     top_pcntg = df_counts / total
     top_pcntg.to_csv(target_string_1)
 
-    df_non_sg = df[df['supergenre'].isna()]
+    df_non_sg = df[df['supergenre'] == 'Otro']
     genres = df_non_sg.genres.sum()
     mcg = get_most_common_genres(genres)
     mcg_df = pd.DataFrame(mcg, columns =['Genre', 'Recurrence'])
     mcg_df.to_csv(target_string_2)
 
+def combine():
+    source_dir = acct1_credentials.target_dir + '/flourish/'
+    dfs = []
+
+    for filename in os.listdir(source_dir):
+        print('the filename is ' + filename)
+        if(filename.endswith('_mcg.csv')):
+            df = pd.read_csv(source_dir + filename)
+            found = re.search('(.+?)_mcg.csv', filename).group(1)
+            df['source'] = found
+            dfs.append(df)
+
+    dfs = pd.concat(dfs)
+    dfs.to_csv(source_dir + 'all_mcg.csv')
+
+
 
 def main():
 
-    
     scope = "user-follow-read"
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
 
@@ -312,13 +339,16 @@ def main():
     rr_most_common_genres.to_csv(acct1_credentials.target_dir + 'rr_most_common_genres.csv')
     rr_match_percentages = get_match_percentage(release_radar)
     rr_match_percentages.to_csv(acct1_credentials.target_dir + 'rr_match_percentages.csv')
-    
+
     # for vizualization in Flourish
     transform('saved_tracks')
     transform('saved_albums')
     transform('followed_artists')
     transform('top_tracks')
     transform('top_artists')
+
+    # combine most common non-supergenre genres datasets
+    combine()
 
 if __name__=="__main__":
     main()
