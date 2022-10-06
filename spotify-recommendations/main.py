@@ -6,6 +6,7 @@ import acct2_credentials
 import pandas as pd
 import re
 from collections import Counter
+from ast import literal_eval
 
 def get_all_saved_tracks(user, limit_step=1):
     """ Returns dataframe with all the user's saved tracks """
