@@ -153,6 +153,13 @@ def get_most_common_genre(df_genres):
     
     return most_common[0]
 
+def get_most_common_genres(df_genres):
+    """ Calculates most frequently ocurring genres from a genres column """  
+    
+    mcs = Counter(df_genres).most_common(15)
+    
+    return mcs
+
 def get_top_tracks(user, limit_step=1):   
     """ Returns user's most played tracks """
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
@@ -193,6 +200,23 @@ def get_top_artists(user, limit_step=1):
     df = pd.DataFrame(d)
 
     return df 
+
+def transform(what):
+    source_string = 'data/rodrigo/' + what + '.csv'
+    target_string_1 = 'data/rodrigo/' + what + '_pctg.csv'
+    target_string_2 = 'data/rodrigo/' + what + '_mcg.csv'
+
+    df = pd.read_csv(source_string, converters={'genres': literal_eval})
+
+    total = len(df.index)
+    df_counts = df.groupby(['supergenre'], dropna=False)['supergenre'].count()
+    top_pcntg = df_counts / total
+    top_pcntg.to_csv(target_string_1)
+
+    df_non_sg = df[df['supergenre'].isna()]
+    genres = df_non_sg.genres.sum()
+    mcg = get_most_common_genres(genres)
+    mcg.to_csv(target_string_2)
 
 
 def main():
