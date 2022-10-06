@@ -305,5 +305,11 @@ def main():
     rr_match_percentages = get_match_percentage(release_radar)
     rr_match_percentages.to_csv(acct1_credentials.target_dir + 'rr_match_percentages.csv')
 
+    transform('saved_tracks')
+    transform('saved_albums')
+    transform('followed_artists')
+    transform('top_tracks')
+    transform('top_artists')
+
 if __name__=="__main__":
     main()
