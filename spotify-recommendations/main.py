@@ -203,9 +203,9 @@ def get_top_artists(user, limit_step=1):
     return df 
 
 def transform(what):
-    source_string = 'data/rodrigo/' + what + '.csv'
-    target_string_1 = 'data/rodrigo/' + what + '_pctg.csv'
-    target_string_2 = 'data/rodrigo/' + what + '_mcg.csv'
+    source_string = acct1_credentials.target_dir + what + '.csv'
+    target_string_1 = acct1_credentials.target_dir + what + '_pctg.csv'
+    target_string_2 = acct1_credentials.target_dir + what + '_mcg.csv'
 
     df = pd.read_csv(source_string, converters={'genres': literal_eval})
 
