@@ -36,17 +36,6 @@ def get_genres(artist_uri, sp):
     artist = sp.artist(artist_uri)
 
     return artist['genres']
-#
-#def get_genre_counts(df)
-#    liked_genres_df = pd.melt(df.genres.apply(pd.Series).reset_index(), 
-#        id_vars=['index'],
-#        value_name='genres') \
-#        .drop('variable', axis=1) \
-#        .sort_values('index') \
-#        .dropna()
-
-#    liked_genres_df = liked_genres_df.groupby(['genres'])['genres'].count()
-#    return liked_genres_df
 
 def get_playlist_tracks(user, playlist_id):
     """ Get tracks from a playlist """
@@ -69,7 +58,6 @@ def get_playlists(user, limit_step=1, regex="^.*$"):
         if response['items'] == []:
             break  
         if re.search(regex, response['items'][0]['name']):
-        #if response['items'][0]['name'].startswith('DW'):
             tracks = get_playlist_tracks(user, response['items'][0]['id'])
 
             for song in tracks:
@@ -165,12 +153,6 @@ def get_most_common_genre(df_genres):
     
     return most_common[0]
 
-#def get_percentage(df):
-#    false_count = (~df.is_match).sum()
-#    true_count = (df.is_match).sum()
-    
-#    return (true_count / (true_count + false_count))
-
 def get_top_tracks(user, limit_step=1):   
     """ Returns user's most played tracks """
     name, popularity, release_date, track_uri, artist_name, artist_uri = [], [], [], [], [], []
@@ -217,15 +199,15 @@ def main():
 
     
     scope = "user-follow-read"
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
 
     urban       = ['alternative hip hop', 'hip hop', 'rap', 'underground hip hop', 'experimental hip hop', 'abstract hip hop', 'conscious hip hop', 'east coast hip hop', 'boom bap', 'psychedelic hip hop', 'trip hop', 'urbano espanol']
     art_chamber = ['art pop', 'chamber pop']
     metropolis  = ['escape room', 'pop', 'dance pop', 'electropop', 'uk pop', 'metropopolis', 'dream pop', 'hyperpop', 'experimental pop', 'proto-hyperpop', 'indietronica']
-    electronic  = ['electronica', 'uk bass', 'deconstructed club', 'wonky', 'witch house', 'microhouse', 'intelligent dance music', 'fluxwork', 'grave wave', 'hauntology', 'classic dubstep', 'jungle', 'glitchbreak', 'atmospheric dnb', 'wave', 'future garage', 'new rave', 'ambient', 'alternative dance', 'uk experimental electronic', 'big beat']
+    electronic  = ['electronica', 'uk bass', 'deconstructed club', 'wonky', 'witch house', 'microhouse', 'intelligent dance music', 'fluxwork', 'grave wave', 'hauntology', 'classic dubstep', 'jungle', 'glitchbreak', 'atmospheric dnb', 'wave', 'future garage', 'new rave', 'ambient', 'alternative dance', 'uk experimental electronic', 'big beat', 'latintronica']
     alt_rock    = ['indie rock', 'alternative rock', 'rock', 'post-rock', 'experimental rock']
     caribbean   = ['dancehall', 'reggae fusion', 'traphall', 'jamaican hip hop']
-    emo         = ['emo', 'dreamo', 'alternative emo', 'midwest emo']
+    emo         = ['emo', 'dreamo', 'alternative emo', 'midwest emo', 'lo-fi emo', 'emo rap', '5th Wave Emo']
 
     supergenres = {
         'urban' : urban,
@@ -238,65 +220,65 @@ def main():
     }
 
     # tracks
-    #scope = "user-library-read"
-    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    #saved_tracks = get_all_saved_tracks(sp)
-    #saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
-    #saved_tracks = add_match_and_supergenre(saved_tracks, supergenres)
-    #saved_tracks.to_csv(acct2_credentials.target_dir + 'saved_tracks.csv')
+    scope = "user-library-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    saved_tracks = get_all_saved_tracks(sp)
+    saved_tracks['genres'] = saved_tracks.artist_uri.apply(get_genres, sp=sp)
+    saved_tracks = add_match_and_supergenre(saved_tracks, supergenres)
+    saved_tracks.to_csv(acct1_credentials.target_dir + 'saved_tracks.csv')
 
     # albums
-    #scope = "user-library-read"
-    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    #saved_albums = get_saved_albums(sp)
-    #saved_albums = add_match_and_supergenre(saved_albums, supergenres)
-    #saved_albums.to_csv(acct2_credentials.target_dir + 'saved_albums.csv')
+    scope = "user-library-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    saved_albums = get_saved_albums(sp)
+    saved_albums = add_match_and_supergenre(saved_albums, supergenres)
+    saved_albums.to_csv(acct1_credentials.target_dir + 'saved_albums.csv')
 
     # artists 
-    #scope = "user-follow-read"
-    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    #followed_artists = get_followed_artists(sp)
-    #followed_artists = add_match_and_supergenre(followed_artists, supergenres)
-    #followed_artists.to_csv(acct2_credentials.target_dir + 'followed_artists.csv')
+    scope = "user-follow-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    followed_artists = get_followed_artists(sp)
+    followed_artists = add_match_and_supergenre(followed_artists, supergenres)
+    followed_artists.to_csv(acct1_credentials.target_dir + 'followed_artists.csv')
 
-    #scope = "user-top-read"
-    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    #top_tracks = get_top_tracks(sp)
-    #top_tracks = add_match_and_supergenre(top_tracks, supergenres)
-    #top_tracks.to_csv(acct2_credentials.target_dir + 'top_tracks.csv')
+    scope = "user-top-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    top_tracks = get_top_tracks(sp)
+    top_tracks = add_match_and_supergenre(top_tracks, supergenres)
+    top_tracks.to_csv(acct1_credentials.target_dir + 'top_tracks.csv')
 
-    #scope = "user-top-read"
-    #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct2_credentials.client_ID, client_secret= acct2_credentials.client_SECRET, redirect_uri=acct2_credentials.redirect_url, scope=scope))
-    #top_artists = get_top_artists(sp)
-    #top_artists = add_match_and_supergenre(top_artists, supergenres)
-    #top_artists.to_csv(acct2_credentials.target_dir + 'top_artists.csv')
+    scope = "user-top-read"
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=acct1_credentials.client_ID, client_secret= acct1_credentials.client_SECRET, redirect_uri=acct1_credentials.redirect_url, scope=scope))
+    top_artists = get_top_artists(sp)
+    top_artists = add_match_and_supergenre(top_artists, supergenres)
+    top_artists.to_csv(acct1_credentials.target_dir + 'top_artists.csv')
 
     # ------------ analysis of recommendations starts here ------------------- #
 
-    # playlists (try to optimize by pulling all playlists and then filtering)
-    #discover_weeklies = get_playlists(sp, regex="^DW.*$")
-    #discover_weeklies = add_match_and_supergenre(discover_weeklies, supergenres)
-    #discover_weeklies.to_csv(acct2_credentials.target_dir + 'discover_weeklies.csv')
-    #dw_most_common_genres = discover_weeklies.groupby('name').agg({'genres': get_most_common_genre})
-    #dw_most_common_genres.to_csv(acct2_credentials.target_dir + 'dw_most_common_genres.csv')
-    #dw_match_percentages = get_match_percentage(discover_weeklies)
-    #dw_match_percentages.to_csv(acct2_credentials.target_dir + 'dw_match_percentages.csv')
+    # playlists 
+    discover_weeklies = get_playlists(sp, regex="^DW.*$")
+    discover_weeklies = add_match_and_supergenre(discover_weeklies, supergenres)
+    discover_weeklies.to_csv(acct1_credentials.target_dir + 'discover_weeklies.csv')
+    dw_most_common_genres = discover_weeklies.groupby('name').agg({'genres': get_most_common_genre})
+    dw_most_common_genres.to_csv(acct1_credentials.target_dir + 'dw_most_common_genres.csv')
+    dw_match_percentages = get_match_percentage(discover_weeklies)
+    dw_match_percentages.to_csv(acct1_credentials.target_dir + 'dw_match_percentages.csv')
 
     daily_mixes = get_playlists(sp, regex="^Daily.*$")
     daily_mixes = add_match_and_supergenre(daily_mixes, supergenres)
-    daily_mixes.to_csv(acct2_credentials.target_dir + 'daily_mixes.csv')
+    daily_mixes.to_csv(acct1_credentials.target_dir + 'daily_mixes.csv')
     dm_most_common_genres = daily_mixes.groupby('name').agg({'genres': get_most_common_genre})
-    dm_most_common_genres.to_csv(acct2_credentials.target_dir + 'dm_most_common_genres.csv')
+    dm_most_common_genres.to_csv(acct1_credentials.target_dir + 'dm_most_common_genres.csv')
     dm_match_percentages = get_match_percentage(daily_mixes)
-    dm_match_percentages.to_csv(acct2_credentials.target_dir + 'dm_match_percentages.csv')
+    dm_match_percentages.to_csv(acct1_credentials.target_dir + 'dm_match_percentages.csv')
 
     release_radar = get_playlists(sp, regex="^Release.*$")
     release_radar = add_match_and_supergenre(release_radar, supergenres)
-    release_radar.to_csv(acct2_credentials.target_dir + 'release_radar.csv')
+    release_radar.to_csv(acct1_credentials.target_dir + 'release_radar.csv')
     rr_most_common_genres = release_radar.groupby('name').agg({'genres': get_most_common_genre})
-    rr_most_common_genres.to_csv(acct2_credentials.target_dir + 'rr_most_common_genres.csv')
+    rr_most_common_genres.to_csv(acct1_credentials.target_dir + 'rr_most_common_genres.csv')
     rr_match_percentages = get_match_percentage(release_radar)
-    rr_match_percentages.to_csv(acct2_credentials.target_dir + 'rr_match_percentages.csv')
+    rr_match_percentages.to_csv(acct1_credentials.target_dir + 'rr_match_percentages.csv')
 
 if __name__=="__main__":
     main()
